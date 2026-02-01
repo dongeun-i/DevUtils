@@ -6,6 +6,7 @@ const RegexTesterPage = () => {
   const [pattern, setPattern] = useState('');
   const [testString, setTestString] = useState('');
 
+  // Regex matching and highlighting logic
   const highlightedResult = useMemo(() => {
     if (!pattern || !testString) {
       return {
@@ -51,11 +52,11 @@ const RegexTesterPage = () => {
         count: matches.length,
         highlighted: <>{parts}</>,
       };
-    } catch (error) {
+    } catch (error: any) {
       return {
         count: 0,
         highlighted: testString,
-        error: "유효하지 않은 정규식입니다.",
+        error: "유효하지 않은 정규식입니다: " + error.message,
       };
     }
   }, [pattern, testString]);
@@ -74,9 +75,12 @@ const RegexTesterPage = () => {
             value={pattern}
             onChange={(e) => setPattern(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-            placeholder="여기에 정규식을 입력하세요 (예: \w+)"
+            placeholder="여기에 정규식을 입력하세요 (예: \\w+)"
           />
         </div>
+
+        {/* Regex Visualization section removed */}
+
         <div>
           <label htmlFor="testString" className="block text-sm font-medium text-gray-700 mb-1">
             테스트 문자열
@@ -92,7 +96,7 @@ const RegexTesterPage = () => {
         </div>
         <div>
           <h2 className="text-xl font-semibold mb-2">결과</h2>
-           {highlightedResult.error && <p className="text-red-500">{highlightedResult.error}</p>}
+          {highlightedResult.error && <p className="text-red-500">{highlightedResult.error}</p>}
           <div className="p-4 bg-gray-100 rounded-md">
             <h3 className="font-bold mb-2">{highlightedResult.count}개 일치</h3>
             <div className="whitespace-pre-wrap p-2 border rounded bg-white">

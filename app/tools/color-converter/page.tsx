@@ -1,18 +1,23 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 
 // Helper function to convert RGB to HEX
 const rgbToHex = (r: number, g: number, b: number) => {
-  return '#' + [r, g, b].map(x => {
-    const hex = x.toString(16);
+  const toHex = (c: number) => {
+    const hex = Math.max(0, Math.min(255, Math.round(c))).toString(16);
     return hex.length === 1 ? '0' + hex : hex;
-  }).join('');
+  };
+  return '#' + toHex(r) + toHex(g) + toHex(b);
 };
 
 // Helper function to convert HEX to RGB
 const hexToRgb = (hex: string) => {
-  const bigint = parseInt(hex.slice(1), 16);
+  const sanitizedHex = hex.startsWith('#') ? hex.slice(1) : hex;
+  if (!sanitizedHex.match(/^[0-9a-fA-F]{6}$/)) { // Only full 6-digit hex
+    return { r: 0, g: 0, b: 0 }; // Return black for invalid hex
+  }
+  const bigint = parseInt(sanitizedHex, 16);
   const r = (bigint >> 16) & 255;
   const g = (bigint >> 8) & 255;
   const b = bigint & 255;
@@ -67,36 +72,42 @@ const hslToRgb = (h: number, s: number, l: number) => {
   g = Math.round((g + m) * 255);
   b = Math.round((b + m) * 255);
 
-  return { r, g, b };
+  return { r: Math.max(0, Math.min(255, r)), g: Math.max(0, Math.min(255, g)), b: Math.max(0, Math.min(255, b)) };
 };
 
 const ColorConverterPage = () => {
-  const [hex, setHex] = useState('#000000');
+  // Single source of truth for color: RGB
   const [rgb, setRgb] = useState({ r: 0, g: 0, b: 0 });
-  const [hsl, setHsl] = useState({ h: 0, s: 0, l: 0 });
 
-  // Update other formats when HEX changes
-  useEffect(() => {
-    if (!hex.match(/^#([0-9a-fA-F]{3}){1,2}$/)) return;
-    const { r, g, b } = hexToRgb(hex);
-    setRgb({ r, g, b });
-    setHsl(rgbToHsl(r, g, b));
-  }, [hex]);
+  // Derived values from RGB
+  const hex = useMemo(() => rgbToHex(rgb.r, rgb.g, rgb.b), [rgb]);
+  const hsl = useMemo(() => rgbToHsl(rgb.r, rgb.g, rgb.b), [rgb]);
 
-  // Update other formats when RGB changes
-  useEffect(() => {
-    const newHex = rgbToHex(rgb.r, rgb.g, rgb.b);
-    if (newHex !== hex) { // Prevent infinite loop
-      setHex(newHex);
+  const handleHexChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newHex = e.target.value;
+    if (newHex.match(/^#([0-9a-fA-F]{3}){1,2}$/)) {
+      setRgb(hexToRgb(newHex));
     }
-    setHsl(rgbToHsl(rgb.r, rgb.g, rgb.b));
-  }, [rgb.r, rgb.g, rgb.b]);
+    // Allow partial input for hex but don't update RGB until valid
+    // This makes the input feel more responsive while typing hex
+  };
 
-  // Update other formats when HSL changes
-  useEffect(() => {
-    const { r, g, b } = hslToRgb(hsl.h, hsl.s, hsl.l);
-    setRgb({ r, g, b }); // This will trigger RGB's useEffect, which will update HEX
-  }, [hsl.h, hsl.s, hsl.l]);
+  const handleRgbChange = (component: 'r' | 'g' | 'b', value: string) => {
+    const numValue = Math.max(0, Math.min(255, parseInt(value, 10) || 0));
+    setRgb(prevRgb => ({ ...prevRgb, [component]: numValue }));
+  };
+
+  const handleHslChange = (component: 'h' | 's' | 'l', value: string) => {
+    let numValue = parseInt(value, 10) || 0;
+    let newHsl = { ...hsl };
+
+    if (component === 'h') {
+      newHsl.h = Math.max(0, Math.min(359, numValue));
+    } else { // s or l
+      newHsl[component] = Math.max(0, Math.min(100, numValue));
+    }
+    setRgb(hslToRgb(newHsl.h, newHsl.s, newHsl.l));
+  };
 
 
   return (
@@ -112,13 +123,13 @@ const ColorConverterPage = () => {
           <input
             type="color"
             id="color-picker"
-            value={hex}
-            onChange={(e) => setHex(e.target.value)}
+            value={hex} // Use derived hex value
+            onChange={handleHexChange}
             className="w-full h-40 border-none cursor-pointer"
           />
           <div
             className="w-full h-20 rounded-md shadow-lg"
-            style={{ backgroundColor: hex }}
+            style={{ backgroundColor: hex }} // Use derived hex value
           ></div>
         </div>
 
@@ -129,8 +140,8 @@ const ColorConverterPage = () => {
             <input
               type="text"
               id="hex-input"
-              value={hex}
-              onChange={(e) => setHex(e.target.value)}
+              value={hex} // Use derived hex value
+              onChange={handleHexChange}
               className="w-full p-2 border rounded-md font-mono"
               placeholder="#RRGGBB"
             />
@@ -142,21 +153,21 @@ const ColorConverterPage = () => {
               <input
                 type="number"
                 value={rgb.r}
-                onChange={(e) => setRgb({ ...rgb, r: Math.max(0, Math.min(255, parseInt(e.target.value) || 0)) })}
+                onChange={(e) => handleRgbChange('r', e.target.value)}
                 className="w-1/3 p-2 border rounded-md font-mono"
                 min="0" max="255"
               />
               <input
                 type="number"
                 value={rgb.g}
-                onChange={(e) => setRgb({ ...rgb, g: Math.max(0, Math.min(255, parseInt(e.target.value) || 0)) })}
+                onChange={(e) => handleRgbChange('g', e.target.value)}
                 className="w-1/3 p-2 border rounded-md font-mono"
                 min="0" max="255"
               />
               <input
                 type="number"
                 value={rgb.b}
-                onChange={(e) => setRgb({ ...rgb, b: Math.max(0, Math.min(255, parseInt(e.target.value) || 0)) })}
+                onChange={(e) => handleRgbChange('b', e.target.value)}
                 className="w-1/3 p-2 border rounded-md font-mono"
                 min="0" max="255"
               />
@@ -168,22 +179,22 @@ const ColorConverterPage = () => {
             <div className="flex gap-2">
               <input
                 type="number"
-                value={hsl.h}
-                onChange={(e) => setHsl({ ...hsl, h: Math.max(0, Math.min(359, parseInt(e.target.value) || 0)) })}
+                value={hsl.h} // Use derived hsl value
+                onChange={(e) => handleHslChange('h', e.target.value)}
                 className="w-1/3 p-2 border rounded-md font-mono"
                 min="0" max="359"
               />
               <input
                 type="number"
-                value={hsl.s}
-                onChange={(e) => setHsl({ ...hsl, s: Math.max(0, Math.min(100, parseInt(e.target.value) || 0)) })}
+                value={hsl.s} // Use derived hsl value
+                onChange={(e) => handleHslChange('s', e.target.value)}
                 className="w-1/3 p-2 border rounded-md font-mono"
                 min="0" max="100"
               />
               <input
                 type="number"
-                value={hsl.l}
-                onChange={(e) => setHsl({ ...hsl, l: Math.max(0, Math.min(100, parseInt(e.target.value) || 0)) })}
+                value={hsl.l} // Use derived hsl value
+                onChange={(e) => handleHslChange('l', e.target.value)}
                 className="w-1/3 p-2 border rounded-md font-mono"
                 min="0" max="100"
               />

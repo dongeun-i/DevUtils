@@ -2,14 +2,33 @@
 
 import React, { useState } from 'react';
 
+// Helper function to get line and column from a character index
+const getLineAndColumnFromCharIndex = (text: string, index: number) => {
+  let line = 1;
+  let column = 1;
+  for (let i = 0; i < index; i++) {
+    if (text[i] === '\n') {
+      line++;
+      column = 1;
+    } else {
+      column++;
+    }
+  }
+  return { line, column };
+};
+
 const JSONFormatterPage = () => {
   const [inputJson, setInputJson] = useState('');
   const [output, setOutput] = useState('');
   const [error, setError] = useState('');
+  const [errorLine, setErrorLine] = useState<number | null>(null);
+  const [errorColumn, setErrorColumn] = useState<number | null>(null);
 
   const handleFormat = () => {
     try {
       setError('');
+      setErrorLine(null);
+      setErrorColumn(null);
       if (!inputJson.trim()) {
         setOutput('');
         return;
@@ -19,7 +38,20 @@ const JSONFormatterPage = () => {
       setOutput(formatted);
     } catch (e: any) {
       setOutput('');
-      setError(`유효하지 않은 JSON입니다: ${e.message}`);
+      let errorMessage = `유효하지 않은 JSON입니다: ${e.message}`;
+      
+      // Attempt to extract position for more detailed error
+      if (e instanceof SyntaxError) {
+        const match = e.message.match(/at position (\d+)/);
+        if (match && match[1]) {
+          const position = parseInt(match[1], 10);
+          const { line, column } = getLineAndColumnFromCharIndex(inputJson, position);
+          errorMessage = `유효하지 않은 JSON입니다: ${e.message} (Line: ${line}, Column: ${column})`;
+          setErrorLine(line);
+          setErrorColumn(column);
+        }
+      }
+      setError(errorMessage);
     }
   };
 
@@ -27,6 +59,8 @@ const JSONFormatterPage = () => {
     setInputJson('');
     setOutput('');
     setError('');
+    setErrorLine(null);
+    setErrorColumn(null);
   };
 
   return (
@@ -42,9 +76,15 @@ const JSONFormatterPage = () => {
             value={inputJson}
             onChange={(e) => setInputJson(e.target.value)}
             rows={20}
-            className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 font-mono"
+            className={`w-full p-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 font-mono ${error ? 'border-red-500' : 'border-gray-300'}`}
             placeholder="여기에 JSON 데이터를 붙여넣으세요."
+            style={errorLine ? { borderColor: 'red', outline: 'none' } : {}}
           />
+           {errorLine && (
+            <p className="text-red-500 text-sm mt-1">
+              에러 발생: Line {errorLine}, Column {errorColumn}
+            </p>
+          )}
         </div>
         <div>
           <label htmlFor="outputJson" className="block text-sm font-medium text-gray-700 mb-1">
