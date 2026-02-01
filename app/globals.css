@@ -1,8 +1,35 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-root:        #FAFAFA;   /* 전체 배경 */
+  --bg-surface:     #FFFFFF;   /* 카드, 패널 */
+  --bg-muted:       #F1F5F9;   /* 입력창, 서브 영역 */
+
+  --text-primary:   #0F172A;   /* 메인 텍스트 */
+  --text-secondary: #475569;   /* 설명, placeholder */
+  --text-muted:     #94A3B8;   /* 비활성 */
+
+  --brand-primary:  #6366F1;   /* Indigo */
+  --brand-hover:    #4F46E5;
+  --brand-soft:     #EEF2FF;   /* 버튼/하이라이트 배경 */
+
+  --accent-cyan:    #22D3EE;   /* 링크, 포커스 */
+  --accent-cyan-bg: #ECFEFF;
+
+  --state-success:  #22C55E;   /* valid */
+  --state-success-bg: #DCFCE7;
+
+  --state-error:    #EF4444;   /* invalid */
+  --state-error-bg: #FEE2E2;
+
+  --state-warning:  #F59E0B;
+  --state-warning-bg: #FEF3C7;
+
+  --border-default: #E2E8F0;
+  --border-focus:   #6366F1;
+
+  --background: var(--bg-root); /* Align with new color palette */
+  --foreground: var(--text-primary); /* Align with new color palette */
 }
 
 @theme inline {
