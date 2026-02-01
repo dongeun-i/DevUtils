@@ -26,12 +26,7 @@ const tools = [
     description: "테스트 및 개발에 필요한 가짜 데이터를 빠르게 생성합니다.",
     icon: Database
   },
-  { 
 
-    label: "색상 변환기", 
-    description: "HEX, RGB, HSL 간 색상 코드를 쉽게 변환하고 선택합니다.",
-    icon: Palette
-  },
 ];
 
 export default function Home() {
@@ -58,21 +53,23 @@ export default function Home() {
         <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
           제공되는 도구들
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {tools.map((tool) => (
-            <Link key={tool.href} href={tool.href} className="group block relative p-4 bg-gray-50 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 text-center flex flex-col items-center justify-center h-36">
-              <div className="text-blue-500 mb-2">
-                <tool.icon size={36} strokeWidth={2} />
-              </div>
-              <h3 className="text-base font-semibold text-gray-800">
-                {tool.label}
-              </h3>
-              {/* Tooltip Description */}
-              <div className="absolute bottom-full mb-2 hidden group-hover:block px-3 py-1 bg-gray-700 text-white text-xs rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                {tool.description}
-              </div>
-            </Link>
-          ))}
+        <div className="flex justify-center">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4">
+            {tools.map((tool) => (
+              <Link key={tool.href} href={tool.href} className="group block relative p-6 bg-gray-50 rounded-lg shadow-md hover:shadow-lg hover:bg-blue-50 hover:scale-[1.2] transition-all duration-200 text-center flex flex-col items-center justify-center h-48">
+                <div className="text-blue-500 mb-2">
+                  <tool.icon size={36} strokeWidth={2} />
+                </div>
+                <h3 className="text-base font-semibold text-gray-800">
+                  {tool.label}
+                </h3>
+                {/* Tooltip Description */}
+                <div className="absolute bottom-full mb-2 hidden group-hover:block px-3 py-1 bg-gray-700 text-white text-xs rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  {tool.description}
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
     </div>
