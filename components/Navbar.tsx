@@ -9,7 +9,7 @@ const navLinks = [
   { href: "/tools/json-formatter", label: "JSON 포맷터" },
   { href: "/tools/base64-encoder", label: "Base64 인코더" },
   { href: "/tools/dummy-data-generator", label: "더미 데이터 생성기" },
-  { href: "/tools/git-command-generator", label: "Git 커맨드 생성기" },
+
   { href: "/tools/color-converter", label: "색상 변환기" },
 ];
 

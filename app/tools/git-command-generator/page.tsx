@@ -25,6 +25,8 @@ const GitCommandGeneratorPage = () => {
   const [deleteTag, setDeleteTag] = useState(false);
 
 
+  const [copied, setCopied] = useState(false); // State for copy feedback
+
   const generatedCommand = useMemo(() => {
     switch (command) {
       case 'commit': {
@@ -75,6 +77,10 @@ const GitCommandGeneratorPage = () => {
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(generatedCommand);
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000); // Reset "Copied!" message after 2 seconds
   };
 
   return (
@@ -101,7 +107,20 @@ const GitCommandGeneratorPage = () => {
       {command === 'commit' && (
         <div className="bg-gray-50 p-4 rounded-md border">
           <h2 className="text-lg font-semibold mb-2">Commit 옵션</h2>
-          {/* ... commit options UI ... */}
+          <div className="flex flex-col gap-4">
+            <div>
+              <label htmlFor="commit-message" className="block text-sm font-medium">커밋 메시지</label>
+              <input type="text" id="commit-message" value={commitMessage} onChange={(e) => setCommitMessage(e.target.value)} className="w-full p-2 border rounded-md" placeholder="Initial commit"/>
+            </div>
+            <div className="flex items-center gap-2">
+              <input type="checkbox" id="stage-all" checked={stageAll} onChange={(e) => setStageAll(e.target.checked)} />
+              <label htmlFor="stage-all">모든 변경 사항 스테이징 (`-a`)</label>
+            </div>
+            <div className="flex items-center gap-2">
+              <input type="checkbox" id="amend" checked={amend} onChange={(e) => setAmend(e.target.checked)} />
+              <label htmlFor="amend">마지막 커밋 수정 (`--amend`)</label>
+            </div>
+          </div>
         </div>
       )}
       
@@ -163,10 +182,22 @@ const GitCommandGeneratorPage = () => {
 
       <div className="mt-6">
         <h2 className="text-xl font-semibold mb-2">생성된 명령어</h2>
-        <div className="p-4 bg-gray-800 text-white font-mono rounded-md flex justify-between items-center">
-          <code>{generatedCommand}</code>
-          <button onClick={copyToClipboard} className="px-3 py-1 bg-gray-600 hover:bg-gray-700 rounded-md">
-            복사
+        <div className="relative p-4 bg-gray-800 text-white font-mono rounded-md">
+          <code className="block pr-10">{generatedCommand}</code> {/* Added pr-10 for spacing */}
+          <button
+            onClick={copyToClipboard}
+            className="absolute top-2 right-2 p-2 bg-gray-700 hover:bg-gray-600 rounded-md text-sm flex items-center justify-center"
+            title="복사"
+          >
+            {copied ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M16 16h.01" />
+              </svg>
+            )}
           </button>
         </div>
       </div>

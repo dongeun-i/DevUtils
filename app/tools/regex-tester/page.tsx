@@ -27,7 +27,7 @@ const RegexTesterPage = () => {
       }
 
       let lastIndex = 0;
-      const parts: (string | JSX.Element)[] = [];
+      const parts: (string | React.JSX.Element)[] = [];
       matches.forEach((match, index) => {
         const matchIndex = match.index ?? 0;
         // Add the text before the match
@@ -50,13 +50,17 @@ const RegexTesterPage = () => {
       
       return {
         count: matches.length,
-        highlighted: <>{parts}</>,
+        highlightedParts: parts, // Return the array of parts
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
+      let errorMessage = "유효하지 않은 정규식입니다.";
+      if (error instanceof Error) {
+        errorMessage += ": " + error.message;
+      }
       return {
         count: 0,
-        highlighted: testString,
-        error: "유효하지 않은 정규식입니다: " + error.message,
+        highlightedParts: [testString], // Return original string in an array for consistency
+        error: errorMessage,
       };
     }
   }, [pattern, testString]);
@@ -100,7 +104,7 @@ const RegexTesterPage = () => {
           <div className="p-4 bg-gray-100 rounded-md">
             <h3 className="font-bold mb-2">{highlightedResult.count}개 일치</h3>
             <div className="whitespace-pre-wrap p-2 border rounded bg-white">
-              {highlightedResult.highlighted}
+              {highlightedResult.highlightedParts}
             </div>
           </div>
         </div>

@@ -34,12 +34,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 0.8,
     },
-    {
-      url: `${baseUrl}/tools/git-command-generator`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
+
     {
       url: `${baseUrl}/tools/color-converter`,
       lastModified: new Date(),

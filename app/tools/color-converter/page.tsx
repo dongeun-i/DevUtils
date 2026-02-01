@@ -29,7 +29,9 @@ const rgbToHsl = (r: number, g: number, b: number) => {
   r /= 255; g /= 255; b /= 255;
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
-  let h = 0, s, l = (max + min) / 2;
+  let h = 0;
+  let s = 0;
+  const l = (max + min) / 2;
 
   if (max === min) {
     h = s = 0; // achromatic
@@ -50,10 +52,10 @@ const rgbToHsl = (r: number, g: number, b: number) => {
 const hslToRgb = (h: number, s: number, l: number) => {
   s /= 100;
   l /= 100;
-  let c = (1 - Math.abs(2 * l - 1)) * s,
-    x = c * (1 - Math.abs((h / 60) % 2 - 1)),
-    m = l - c / 2,
-    r = 0, g = 0, b = 0;
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+  const m = l - c / 2;
+  let r = 0, g = 0, b = 0;
 
   if (0 <= h && h < 60) {
     r = c; g = x; b = 0;
@@ -98,9 +100,8 @@ const ColorConverterPage = () => {
   };
 
   const handleHslChange = (component: 'h' | 's' | 'l', value: string) => {
-    let numValue = parseInt(value, 10) || 0;
-    let newHsl = { ...hsl };
-
+      const numValue = parseInt(value, 10) || 0;
+      const newHsl = { ...hsl };
     if (component === 'h') {
       newHsl.h = Math.max(0, Math.min(359, numValue));
     } else { // s or l
@@ -115,24 +116,6 @@ const ColorConverterPage = () => {
       <h1 className="text-2xl font-bold mb-4">색상 피커 / 변환기</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Color Picker */}
-        <div className="flex flex-col gap-4">
-          <label htmlFor="color-picker" className="block text-lg font-medium text-gray-700">
-            색상 선택
-          </label>
-          <input
-            type="color"
-            id="color-picker"
-            value={hex} // Use derived hex value
-            onChange={handleHexChange}
-            className="w-full h-40 border-none cursor-pointer"
-          />
-          <div
-            className="w-full h-20 rounded-md shadow-lg"
-            style={{ backgroundColor: hex }} // Use derived hex value
-          ></div>
-        </div>
-
         {/* Converters */}
         <div className="flex flex-col gap-4">
           <div>
@@ -142,7 +125,7 @@ const ColorConverterPage = () => {
               id="hex-input"
               value={hex} // Use derived hex value
               onChange={handleHexChange}
-              className="w-full p-2 border rounded-md font-mono"
+              className="w-full p-2 border rounded-md font-mono shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="#RRGGBB"
             />
           </div>
@@ -154,21 +137,21 @@ const ColorConverterPage = () => {
                 type="number"
                 value={rgb.r}
                 onChange={(e) => handleRgbChange('r', e.target.value)}
-                className="w-1/3 p-2 border rounded-md font-mono"
+                className="w-1/3 p-2 border rounded-md font-mono shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                 min="0" max="255"
               />
               <input
                 type="number"
                 value={rgb.g}
                 onChange={(e) => handleRgbChange('g', e.target.value)}
-                className="w-1/3 p-2 border rounded-md font-mono"
+                className="w-1/3 p-2 border rounded-md font-mono shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                 min="0" max="255"
               />
               <input
                 type="number"
                 value={rgb.b}
                 onChange={(e) => handleRgbChange('b', e.target.value)}
-                className="w-1/3 p-2 border rounded-md font-mono"
+                className="w-1/3 p-2 border rounded-md font-mono shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                 min="0" max="255"
               />
             </div>
@@ -181,24 +164,48 @@ const ColorConverterPage = () => {
                 type="number"
                 value={hsl.h} // Use derived hsl value
                 onChange={(e) => handleHslChange('h', e.target.value)}
-                className="w-1/3 p-2 border rounded-md font-mono"
+                className="w-1/3 p-2 border rounded-md font-mono shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                 min="0" max="359"
               />
               <input
                 type="number"
                 value={hsl.s} // Use derived hsl value
                 onChange={(e) => handleHslChange('s', e.target.value)}
-                className="w-1/3 p-2 border rounded-md font-mono"
+                className="w-1/3 p-2 border rounded-md font-mono shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                 min="0" max="100"
               />
               <input
                 type="number"
                 value={hsl.l} // Use derived hsl value
                 onChange={(e) => handleHslChange('l', e.target.value)}
-                className="w-1/3 p-2 border rounded-md font-mono"
+                className="w-1/3 p-2 border rounded-md font-mono shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                 min="0" max="100"
               />
             </div>
+          </div>
+        </div>
+        {/* Color Picker */}
+        <div className="flex flex-col gap-4">
+
+          <div
+            className="w-full h-20 rounded-md shadow-lg border border-gray-300"
+            style={{ backgroundColor: hex }} // Use derived hex value
+          ></div>
+          <div className="relative w-full">
+            <input
+              type="color"
+              id="color-picker-actual"
+              value={hex} // Use derived hex value
+              onChange={handleHexChange}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              title="색상 선택" // Add title for accessibility
+            />
+            <button
+              onClick={() => document.getElementById('color-picker-actual')?.click()}
+              className="w-full px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded-md hover:bg-gray-300 flex items-center justify-center"
+            >
+              색상 선택
+            </button>
           </div>
         </div>
       </div>
