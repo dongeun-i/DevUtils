@@ -18,7 +18,7 @@ const Navbar = () => {
 
   return (
     <nav className="container mx-auto flex justify-between items-center py-2">
-      <Link href="/" className="text-xl font-bold text-[color:var(--text-primary)]">
+      <Link href="/" className="text-xl font-bold text-white">
         DevUtils
       </Link>
       <div className="flex gap-2 sm:gap-4 flex-wrap justify-end">
@@ -29,7 +29,7 @@ const Navbar = () => {
               key={link.href}
               href={link.href}
               className={`px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200
-                ${isActive ? "bg-[color:var(--brand-primary)] text-white" : "text-[color:var(--text-primary)] hover:bg-[color:var(--brand-soft)] hover:text-[color:var(--text-primary)]"}`}
+                ${isActive ? "bg-[color:var(--brand-hover)] text-white" : "text-white hover:bg-[color:var(--brand-soft)]"}`}
             >
               {link.label}
             </Link>

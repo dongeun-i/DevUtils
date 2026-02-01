@@ -45,7 +45,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className="font-sans antialiased">
         <div className="flex flex-col min-h-screen">
-          <header className="bg-[color:var(--bg-surface)] text-[color:var(--text-primary)] p-4 shadow-sm">
+          <header className="bg-[color:var(--brand-primary)] text-white p-4 shadow-sm">
             <Navbar /> {/* Use the Navbar component */}
           </header>
           <main className="flex-grow container mx-auto p-4">
