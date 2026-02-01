@@ -112,7 +112,7 @@ const DummyDataGeneratorPage = () => {
                             <option key={key} value={key}>{value}</option>
                           ))}
                         </select>
-                        <button onClick={() => removeSchemaRow(row.id)} className="px-3 py-2 bg-red-500 text-white rounded-md">X</button>
+                        <button onClick={() => removeSchemaRow(row.id)} className="px-3 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">X</button>
                       </div>
                     ))}
                     <button onClick={addSchemaRow} className="px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded-md mt-2 hover:bg-gray-300">필드 추가</button>
