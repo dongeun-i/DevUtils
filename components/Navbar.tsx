@@ -9,8 +9,10 @@ const navLinks = [
   { href: "/tools/json-formatter", label: "JSON 포맷터" },
   { href: "/tools/base64-encoder", label: "Base64 인코더" },
   { href: "/tools/dummy-data-generator", label: "더미 데이터 생성기" },
-
-
+  { href: "/tools/url-encoder", label: "URL 인코더" },
+  { href: "/tools/timestamp-converter", label: "타임스탬프" },
+  { href: "/tools/diff-checker", label: "Diff 체커" },
+  { href: "/tools/markdown-preview", label: "마크다운" },
 ];
 
 const Navbar = () => {
@@ -29,7 +31,7 @@ const Navbar = () => {
               key={link.href}
               href={link.href}
               className={`px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200
-                ${isActive ? "bg-[color:var(--brand-hover)] text-white" : "text-white hover:bg-[color:var(--brand-soft)]"}`}
+                ${isActive ? "bg-[color:var(--brand-hover)] text-white" : ""}`}
             >
               {link.label}
             </Link>

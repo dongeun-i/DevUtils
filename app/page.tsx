@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Regex, Braces, Binary, Database, Palette } from "lucide-react";
+import { Regex, Braces, Binary, Database, Link2, Clock, GitCompare, FileText } from "lucide-react";
 
 const tools = [
   { 
@@ -26,7 +26,30 @@ const tools = [
     description: "테스트 및 개발에 필요한 가짜 데이터를 빠르게 생성합니다.",
     icon: Database
   },
-
+  { 
+    href: "/tools/url-encoder", 
+    label: "URL 인코더/디코더", 
+    description: "URL 또는 텍스트를 인코딩·디코딩하여 한글·특수문자를 안전하게 변환합니다.",
+    icon: Link2
+  },
+  { 
+    href: "/tools/timestamp-converter", 
+    label: "타임스탬프 변환기", 
+    description: "Unix 타임스탬프와 읽기 쉬운 날짜를 서로 변환합니다.",
+    icon: Clock
+  },
+  { 
+    href: "/tools/diff-checker", 
+    label: "Diff 체커", 
+    description: "두 텍스트의 차이를 시각적으로 비교합니다.",
+    icon: GitCompare
+  },
+  { 
+    href: "/tools/markdown-preview", 
+    label: "마크다운 미리보기", 
+    description: "마크다운을 실시간으로 렌더링하여 미리보기합니다.",
+    icon: FileText
+  },
 ];
 
 export default function Home() {
@@ -54,20 +77,27 @@ export default function Home() {
         </h2>
         <div className="flex justify-center">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4">
-            {tools.map((tool) => (
-              <Link key={tool.href} href={tool.href} className="group block relative p-6 bg-[color:var(--bg-surface)] border-[1px] border-[color:var(--border-default)] rounded-lg shadow-md hover:shadow-lg hover:bg-[color:var(--brand-soft)] hover:scale-[1.2] transition-all duration-200 text-center flex flex-col items-center justify-center h-48">
-                <div className="text-[color:var(--brand-primary)] mb-2">
-                  <tool.icon size={36} strokeWidth={2} />
-                </div>
-                <h3 className="text-base font-semibold text-[color:var(--text-primary)]">
-                  {tool.label}
-                </h3>
-                {/* Tooltip Description */}
-                <div className="absolute bottom-full mb-2 hidden group-hover:block px-3 py-1 bg-[color:var(--text-primary)] text-[color:var(--bg-surface)] text-xs rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                  {tool.description}
-                </div>
-              </Link>
-            ))}
+            {tools.map((tool, index) => {
+              const tooltipAbove = index < 4;
+              return (
+                <Link key={tool.href} href={tool.href} className="group block relative p-6 hover:py-8 hover:px-8 bg-[color:var(--bg-surface)] border-[1px] border-[color:var(--border-default)] rounded-lg shadow-md hover:shadow-lg hover:bg-[color:var(--brand-soft)] transition-all duration-200 ease-out text-center flex flex-col items-center justify-center min-h-48">
+                  <div className="text-[color:var(--brand-primary)] mb-2">
+                    <tool.icon size={36} strokeWidth={2} />
+                  </div>
+                  <h3 className="text-base font-semibold text-[color:var(--text-primary)]">
+                    {tool.label}
+                  </h3>
+                  {/* Tooltip: 상위 4개는 위, 하위 4개는 아래 */}
+                  <div
+                    className={`absolute left-1/2 -translate-x-1/2 hidden group-hover:block px-3 py-1 bg-[color:var(--text-primary)] text-[color:var(--bg-surface)] text-xs rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 ${
+                      tooltipAbove ? "bottom-full mb-2" : "top-full mt-2"
+                    }`}
+                  >
+                    {tool.description}
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
