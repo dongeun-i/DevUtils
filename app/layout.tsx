@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "../components/Navbar"; // Import the new Navbar component
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const BASE_URL = 'https://devutils.example.com'; // Replace with your actual domain
 
@@ -45,12 +46,13 @@ export default function RootLayout({
     <html lang="ko">
       <body className="font-sans antialiased">
         <div className="flex flex-col min-h-screen">
-          <header className="bg-[color:var(--brand-primary)] text-white p-4 shadow-sm">
+          <header className="bg-[color:var(--brand-primary)] px-3 sm:px-4 py-2 sm:py-2.5 text-white shadow-sm">
             <Navbar /> {/* Use the Navbar component */}
           </header>
           <main className="flex-grow container mx-auto p-4">
             {children}
           </main>
+          <Footer />
         </div>
       </body>
     </html>

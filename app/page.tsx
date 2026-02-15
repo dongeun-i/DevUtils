@@ -80,16 +80,16 @@ export default function Home() {
             {tools.map((tool, index) => {
               const tooltipAbove = index < 4;
               return (
-                <Link key={tool.href} href={tool.href} className="group block relative p-6 hover:py-8 hover:px-8 bg-[color:var(--bg-surface)] border-[1px] border-[color:var(--border-default)] rounded-lg shadow-md hover:shadow-lg hover:bg-[color:var(--brand-soft)] transition-all duration-200 ease-out text-center flex flex-col items-center justify-center min-h-48">
+                <Link key={tool.href} href={tool.href} className="group block relative p-6 md:hover:py-8 md:hover:px-8 bg-[color:var(--bg-surface)] border-[1px] border-[color:var(--border-default)] rounded-lg shadow-md md:hover:shadow-lg md:hover:bg-[color:var(--brand-soft)] transition-all duration-200 ease-out text-center flex flex-col items-center justify-center min-h-48">
                   <div className="text-[color:var(--brand-primary)] mb-2">
                     <tool.icon size={36} strokeWidth={2} />
                   </div>
                   <h3 className="text-base font-semibold text-[color:var(--text-primary)]">
                     {tool.label}
                   </h3>
-                  {/* Tooltip: 상위 4개는 위, 하위 4개는 아래 */}
+                  {/* Tooltip: md 이상에서만 호버 시 표시 */}
                   <div
-                    className={`absolute left-1/2 -translate-x-1/2 hidden group-hover:block px-3 py-1 bg-[color:var(--text-primary)] text-[color:var(--bg-surface)] text-xs rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 ${
+                    className={`absolute left-1/2 -translate-x-1/2 hidden md:block opacity-0 md:group-hover:opacity-100 px-3 py-1 bg-[color:var(--text-primary)] text-[color:var(--bg-surface)] text-xs rounded-md whitespace-nowrap transition-opacity duration-200 ${
                       tooltipAbove ? "bottom-full mb-2" : "top-full mt-2"
                     }`}
                   >
